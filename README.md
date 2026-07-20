@@ -169,5 +169,7 @@ If `aggl/` contains a `plugin.cfg`, enable the plugin under **Project > Project 
 
 
 ## How to Use Example
+```text
 var dash_cooldown := AGGL.Cooldown.new()
 var direction := AGGL.normalized_or_zero(input_vector)
+```
