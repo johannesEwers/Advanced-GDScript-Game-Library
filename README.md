@@ -166,3 +166,8 @@ res://addons/aggl/
 ```
 
 If `aggl/` contains a `plugin.cfg`, enable the plugin under **Project > Project Settings > Plugins**.
+
+
+## How to Use Example
+var dash_cooldown := AGGL.Cooldown.new()
+var direction := AGGL.normalized_or_zero(input_vector)
