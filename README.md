@@ -13,29 +13,6 @@ code, assets, and other files may remain proprietary.
 See [`LICENSE`](LICENSE) for the complete license terms.
 
 
-### Artworks
-Unless explicitly stated otherwise, all artwork and other visual assets 
-included in this project are licensed under the Mozilla Public License 2.0 
-(MPL-2.0).
-
-Artwork obtained from third parties remains subject to its respective original 
-license and copyright notices.
-
-
-### Attached MPL-2.0 Code
-A Godot scene is licensed under the Mozilla Public License 2.0 (MPL-2.0) when it 
-directly attaches or references an MPL-2.0-licensed script with the same base 
-filename.
-
-For example, when enemy_base_2d.tscn directly uses enemy_base_2d.gd, and the 
-script is licensed under the MPL-2.0, the accompanying scene file is also 
-licensed under the MPL-2.0, even when the scene file itself does not contain a 
-separate copyright or license notice.
-
-This rule applies to Godot scene files such as .tscn and .scn files unless a 
-different license is explicitly stated for the scene.
-
-
 ## Practical Compliance Guide
 The Mozilla Public License 2.0 (`MPL-2.0`) uses file-level copyleft. Its
 requirements apply to MPL-covered files and do not automatically extend to the
