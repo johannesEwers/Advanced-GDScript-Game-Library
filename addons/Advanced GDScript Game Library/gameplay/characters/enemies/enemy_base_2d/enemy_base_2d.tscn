@@ -213,8 +213,6 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_7n23c")
 animation = &"idle_loop"
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1675224738]
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=621488861]
 shape = SubResource("CircleShape2D_iu2w8")
 
@@ -222,3 +220,9 @@ shape = SubResource("CircleShape2D_iu2w8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea2D" unique_id=745578998]
 shape = SubResource("RectangleShape2D_7n23c")
+
+[node name="MovementComponent" type="Node2D" parent="." unique_id=628295917]
+
+[node name="BehaviorController" type="Node2D" parent="." unique_id=1007184797]
+
+[node name="AbilityController" type="Node2D" parent="." unique_id=1811323384]

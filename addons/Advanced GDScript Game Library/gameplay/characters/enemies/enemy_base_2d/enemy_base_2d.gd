@@ -3,136 +3,168 @@
 
 class_name EnemyBase2D
 extends CharacterBody2D
+## Base class for two-dimensional enemies.
+##
+## Health values and health-state transitions are delegated to a
+## [HealthComponent]. This class handles enemy-specific movement, animations,
+## collision shutdown, and removal from the scene.
+##
+## The associated [AnimatedSprite2D] should provide the following animations:
+## `idle`, `walk_left`, `walk_right`, `turn_left`, `turn_right`, `attack`,
+## `hit`, and `death`.
+##
+## The `walk_left` and `walk_right` animations may loop. The `turn_left`,
+## `turn_right`, `attack`, `hit`, and `death` animations must not loop.
+## The `attack` animation must contain at least two frames.
 
 
-## Reference to the enemy's animated sprite, resolved when the node is ready.
-@onready var animated_sprite: AnimatedSprite2D = %AnimatedSprite2D
+## Emitted when this enemy requests that its attack be resolved.
+##
+## Receiving systems are responsible for creating the attack effect, selecting
+## targets, and applying damage. Emission does not mean that an attack has hit.
+signal attack_requested(enemy: EnemyBase2D)
 
-## Reference to the enemy's collision shape, resolved when the node is ready.
-@onready var collision_shape: CollisionShape2D = %CollisionShape2D
+## Emitted after this enemy actually loses health.
+##
+## [param amount] is the health loss applied by the [HealthComponent].
+## [param source] identifies the damage source, if one was provided.
+signal damage_taken(
+	enemy: EnemyBase2D,
+	amount: float,
+	source: Variant
+)
+
+## Emitted when this enemy's health changes from above zero to zero.
+##
+## [param source] identifies the cause of death, if one was provided.
+signal died(
+	enemy: EnemyBase2D,
+	source: Variant
+)
 
 
-## Indicates whether this enemy is currently performing its death sequence.
-## This prevents the sequence from being started more than once.
+## True while the death animation and removal sequence are running.
+##
+## This is distinct from [member HealthComponent.is_dead], which represents
+## only the logical health state.
 var is_dying: bool = false
 
 
-## Emitted when this enemy's health changes.
-## Provides the current and maximum health values.
-signal health_changed(current_health: int, maximum_health: int)
+## Sprite used for all base enemy animations.
+@onready var animated_sprite: AnimatedSprite2D = %AnimatedSprite2D
 
-## Emitted when this enemy performs an attack.
-## [param enemy] is the enemy performing the attack.
-signal attacked(enemy: EnemyBase2D)
+## Main collision shape disabled when the death sequence begins.
+@onready var collision_shape: CollisionShape2D = %CollisionShape2D
 
-## Emitted when this enemy is attacked.
-## [param enemy] is the enemy that was attacked.
-signal was_attacked(enemy: EnemyBase2D)
-
-## Emitted when this enemy dies.
-## [param enemy] is the enemy that died.
-signal died(enemy: EnemyBase2D)
+## Component responsible for health values and health-state transitions.
+@onready var health: HealthComponent = $HealthComponent
 
 
-@export_category("Health")
-@export_range(1, 100_000, 1)
-var maximum_health: int = 100
-var current_health: int
-
-
-# Executed once when the node and its children are ready.
 func _ready() -> void:
-	current_health = maximum_health
+	health.damaged.connect(_on_health_damaged)
+	health.died.connect(_on_health_died)
+
 	animated_sprite.play(&"idle")
 
-# Executed in every rendered frame.
-func _process(delta: float) -> void:
-	pass
 
-# Executed at a fixed rate for physics-related updates.
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
-func walk_left() -> void:
-	animated_sprite.play(&"walk_left")
-	await animated_sprite.animation_finished
 
+## Starts the left-facing walking animation.
+##
+## This method changes only the animation. Movement is controlled through
+## [member CharacterBody2D.velocity].
+func walk_left() -> void:
+	if health.is_dead or is_dying:
+		return
+
+	animated_sprite.play(&"walk_left")
+
+
+## Plays the non-looping left-turn animation.
+##
+## The final frame remains visible and acts as the left-facing idle pose.
 func turn_left() -> void:
+	if health.is_dead or is_dying:
+		return
+
 	animated_sprite.play(&"turn_left")
 	await animated_sprite.animation_finished
 
-	# Can be replaced later with a custom idle_left animation.
-	animated_sprite.pause()
 
+## Starts the right-facing walking animation.
+##
+## This method changes only the animation. Movement is controlled through
+## [member CharacterBody2D.velocity].
 func walk_right() -> void:
-	animated_sprite.play(&"walk_right")
-	await animated_sprite.animation_finished
+	if health.is_dead or is_dying:
+		return
 
+	animated_sprite.play(&"walk_right")
+
+
+## Plays the non-looping right-turn animation.
+##
+## The final frame remains visible and acts as the right-facing idle pose.
 func turn_right() -> void:
+	if health.is_dead or is_dying:
+		return
+
 	animated_sprite.play(&"turn_right")
 	await animated_sprite.animation_finished
 
-	# Can be replaced later with a custom idle_left animation.
-	animated_sprite.pause()
 
-func attack() -> void:
-	velocity = Vector2.ZERO
-
-	animated_sprite.play(&"attack")
-
-	# Transition from the charging frame to the hit frame.
-	await animated_sprite.frame_changed
-	# deal_damage() / damage_to_player()
-
-	await animated_sprite.animation_finished
-	animated_sprite.play(&"idle")
-
-func take_damage(amount: int) -> void:
-	if amount <= 0 or current_health <= 0:
-		return
-	animated_sprite.play(&"hit")
-	await animated_sprite.animation_finished
-	animated_sprite.play(&"idle")
-
-	current_health = maxi(current_health - amount, 0)
-	health_changed.emit(current_health, maximum_health)
-
-	if current_health == 0:
-		die()
-	###
-	if current_health <= 0:
-		return
-
-	current_health = maxi(current_health - amount, 0)
-	health_changed.emit(current_health, maximum_health)
-
-	if current_health == 0:
-		die()
-
-
-## Starts the enemy's death sequence.
+## Performs the base attack animation.
 ##
-## This method deliberately does not check the enemy's health. Death may be
-## caused by lethal damage, an instant-death spell, or a scripted event.
-func die() -> void:
-	# Ignore additional death requests while the sequence is already running.
+## The first frame transition is treated as the attack's hit moment and emits
+## [signal attacked]. The actual damage should be applied by a combat or ability
+## component.
+func attack() -> void:
+	if health.is_dead or is_dying:
+		return
+
+	attack_requested.emit(self)
+
+
+## Applies damage through the associated [HealthComponent].
+##
+## Returns the amount of health actually lost after clamping and validation.
+func take_damage(amount: float, source: Variant = null) -> float:
+	return health.take_damage(amount, source)
+
+
+## Applies healing through the associated [HealthComponent].
+##
+## Returns the amount of health actually restored.
+func heal(amount: float, source: Variant = null) -> float:
+	if is_dying:
+		return 0.0
+
+	return health.heal(amount, source)
+
+
+## Causes an explicit death, including while the enemy is invulnerable.
+##
+## Returns `true` if this call changed the enemy from alive to dead.
+func kill(source: Variant = null) -> bool:
+	return health.kill(source)
+
+
+func _on_health_damaged(amount: float, source: Variant) -> void:
+	damage_taken.emit(self, amount, source)
+
+
+func _on_health_died(source: Variant) -> void:
 	if is_dying:
 		return
 
 	is_dying = true
-
-	# Stop movement and prevent further physics updates.
 	velocity = Vector2.ZERO
 	set_physics_process(false)
 
-	# Prevent further physical interactions during the death animation.
 	collision_shape.set_deferred(&"disabled", true)
 
-	# Notify other systems that this enemy is now considered dead.
-	died.emit(self)
-
-	# Play the non-looping death animation before removing the enemy.
-	animated_sprite.play(&"death")
-	await animated_sprite.animation_finished
+	died.emit(self, source)
 
 	queue_free()
