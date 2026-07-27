@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://d0b0meypgu76c" path="res://addons/Advanced GDScript Game Library/gameplay/characters/enemies/enemy_base_2d/enemy_base2d_turn-right_MPL-2.0.png" id="8_emm4v"]
 [ext_resource type="Texture2D" uid="uid://bwvuglcwv7wxo" path="res://addons/Advanced GDScript Game Library/gameplay/characters/enemies/enemy_base_2d/enemy_base_2d_walk-left_MPL-2.0.png" id="9_nc3v0"]
 [ext_resource type="Texture2D" uid="uid://b538i4le3qv27" path="res://addons/Advanced GDScript Game Library/gameplay/characters/enemies/enemy_base_2d/enemy_base_2d_walk-right_MPL-2.0.png" id="10_56kwg"]
+[ext_resource type="Script" uid="uid://56psbnyl2mit" path="res://addons/Advanced GDScript Game Library/gameplay/components/health_component.gd" id="11_4vynp"]
+[ext_resource type="Script" uid="uid://nn2fi6m4oh2m" path="res://addons/Advanced GDScript Game Library/gameplay/components/inventory_component.gd" id="11_8c7vv"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_af88y"]
 atlas = ExtResource("2_nc3v0")
@@ -220,6 +222,12 @@ shape = SubResource("CircleShape2D_iu2w8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea2D" unique_id=745578998]
 shape = SubResource("RectangleShape2D_7n23c")
+
+[node name="HealthComponent" type="Node2D" parent="." unique_id=1774544584]
+script = ExtResource("11_4vynp")
+
+[node name="InventoryComponent" type="Node2D" parent="." unique_id=1096440737]
+script = ExtResource("11_8c7vv")
 
 [node name="MovementComponent" type="Node2D" parent="." unique_id=628295917]
 
