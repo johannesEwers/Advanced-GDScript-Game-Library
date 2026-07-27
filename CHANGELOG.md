@@ -67,10 +67,10 @@ Refactor EnemyBase2D to delegate health management and health-state transitions 
 - Delegate attack resolution to external combat or ability systems
 - Document required sprite animations, component responsibilities, signals, state variables, and public methods
 
-## v0.2.2
+## v0.3.0
 
 - docs: add "Godot registers these scripts globally through `class_name`." in README
-- feat(inventory): add reusable inventory component
+- feat(inventory): add reusable inventory component <br>
   Introduce an actor- and dimension-independent inventory system. The component can be attached to players, enemies, NPCs, containers, and world-loot objects without coupling inventory state to input, physics, or UI.
   - Add InventoryItemDefinition as the shared source of immutable item-type data such as identifiers, display metadata, stack limits, weight, icons, and tags.
   - Add InventoryEntry to represent individual runtime stacks while keeping item definitions shared.
@@ -84,3 +84,16 @@ Refactor EnemyBase2D to delegate health management and health-state transitions 
     - defensive copies for externally exposed inventory entries
     - signals for content, quantity, capacity, and rejection events
     - mutation guards that prevent inconsistent nested operations
+
+## v0.3.1
+
+- feat(enemy): integrate inventory support into EnemyBase2D <br>
+  Attach an InventoryComponent to EnemyBase2D so each enemy instance can own and manage carried items independently. <br>
+  Add a typed inventory reference using the InventoryComponent scene-unique name and document its responsibility within the enemy base class. <br>
+  Add comments clarifying that queue_free() also deletes the InventoryComponent and that items must be transferred to a separate corpse, loot container, or drop system if they should remain available after death.
+  This change prepares EnemyBase2D for:
+  - predefined and dynamically collected enemy items
+  - item transfers between enemies, players, and containers
+  - corpse inventories and world-loot containers
+  - future loot-drop handling during the death sequence
+- feat(enemy): Attach an HealthComponent to EnemyBase2D.

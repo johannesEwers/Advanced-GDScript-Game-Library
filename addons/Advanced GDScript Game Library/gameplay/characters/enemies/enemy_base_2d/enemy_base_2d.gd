@@ -59,6 +59,9 @@ var is_dying: bool = false
 ## Component responsible for health values and health-state transitions.
 @onready var health: HealthComponent = $HealthComponent
 
+## Inventory containing the items currently carried by this enemy.
+@onready var inventory: InventoryComponent = %InventoryComponent
+
 
 func _ready() -> void:
 	health.damaged.connect(_on_health_damaged)
@@ -164,7 +167,13 @@ func _on_health_died(source: Variant) -> void:
 	set_physics_process(false)
 
 	collision_shape.set_deferred(&"disabled", true)
+	
+	var loot_entries := inventory.get_entries()
 
 	died.emit(self, source)
 
+	# Delete Enemy
+	# Deletes InventoryComponent too after death!
+	# Swap and store inventory items separate, if necessary!
+	# Maybe Corpse or LootContainer (e.g. inventory.transfer_all_to(corpse.inventory)).
 	queue_free()
