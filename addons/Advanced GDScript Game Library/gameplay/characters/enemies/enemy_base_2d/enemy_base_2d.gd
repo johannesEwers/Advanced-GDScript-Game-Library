@@ -62,6 +62,9 @@ var is_dying: bool = false
 ## Component responsible for stamina values and stamina-state transitions.
 @onready var stamina: StaminaComponent = $StaminaComponent
 
+## Component responsible for magicka values and magicka-state transitions.
+@onready var magicka: MagickaComponent = $MagickaComponent
+
 ## Inventory containing the items currently carried by this enemy.
 @onready var inventory: InventoryComponent = %InventoryComponent
 

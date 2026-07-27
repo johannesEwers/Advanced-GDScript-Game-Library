@@ -115,3 +115,11 @@ fix(assets): correct EnemyBase2D sprite filenames <br>
 Rename the EnemyBase2D sprite files to correct typographical errors in their filenames.
 
 Keep the sprite assets consistently named and update affected references so the corresponding animations continue to load correctly.
+
+## v0.5.0
+
+feat(gameplay): add MagickaComponent <br>
+Introduce a reusable MagickaComponent for managing the magicka resource required by spells and magical abilities.
+
+- The component follows the established HealthComponent and StaminaComponent architecture and provides operations for consuming, restoring, depleting, and resetting magicka. It also supports configurable initial and maximum values, atomic consumption checks, ratio preservation, and signals for relevant state changes.
+- Add the MagickaComponent to EnemyBase2D so every enemy can maintain an independent magicka pool. Spell execution, regeneration, and cost modifiers remain the responsibility of dedicated gameplay systems.
