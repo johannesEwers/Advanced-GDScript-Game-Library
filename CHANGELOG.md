@@ -108,3 +108,10 @@ Add a reusable StaminaComponent.
 - Support maximum-stamina changes with optional ratio preservation and ensure that the current value always remains within the valid range from zero to maximum stamina.
 - Keep movement, input, combat, UI, and automatic regeneration outside the component so it remains reusable across players, enemies, and both 2D and 3D gameplay systems.
 - Update EnemyBase2D to include and expose a StaminaComponent, allowing stamina-dependent enemy actions to use the shared component API instead of managing stamina directly inside the enemy class.
+
+## v0.4.1
+
+fix(assets): correct EnemyBase2D sprite filenames <br>
+Rename the EnemyBase2D sprite files to correct typographical errors in their filenames.
+
+Keep the sprite assets consistently named and update affected references so the corresponding animations continue to load correctly.
