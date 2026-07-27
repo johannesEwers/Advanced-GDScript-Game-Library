@@ -165,7 +165,10 @@ your Godot project:
 res://addons/aggl/
 ```
 
-If `aggl/` contains a `plugin.cfg`, enable the plugin under **Project > Project Settings > Plugins**.
+If `aggl/` contains a `plugin.cfg`, enable the plugin under **Project > Project 
+Settings > Plugins**.
+
+Godot registers these scripts globally through `class_name`.
 
 
 ## How to Use Example
