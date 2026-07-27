@@ -59,6 +59,9 @@ var is_dying: bool = false
 ## Component responsible for health values and health-state transitions.
 @onready var health: HealthComponent = $HealthComponent
 
+## Component responsible for stamina values and stamina-state transitions.
+@onready var stamina: StaminaComponent = $StaminaComponent
+
 ## Inventory containing the items currently carried by this enemy.
 @onready var inventory: InventoryComponent = %InventoryComponent
 

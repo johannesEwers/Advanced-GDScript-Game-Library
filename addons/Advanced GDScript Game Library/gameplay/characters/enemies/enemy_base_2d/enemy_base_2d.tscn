@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://b538i4le3qv27" path="res://addons/Advanced GDScript Game Library/gameplay/characters/enemies/enemy_base_2d/enemy_base_2d_walk-right_MPL-2.0.png" id="10_56kwg"]
 [ext_resource type="Script" uid="uid://56psbnyl2mit" path="res://addons/Advanced GDScript Game Library/gameplay/components/health_component.gd" id="11_4vynp"]
 [ext_resource type="Script" uid="uid://nn2fi6m4oh2m" path="res://addons/Advanced GDScript Game Library/gameplay/components/inventory_component.gd" id="11_8c7vv"]
+[ext_resource type="Script" uid="uid://pcaistva7gc2" path="res://addons/Advanced GDScript Game Library/gameplay/components/stamina_component.gd" id="12_yqkox"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_af88y"]
 atlas = ExtResource("2_nc3v0")
@@ -225,6 +226,9 @@ shape = SubResource("RectangleShape2D_7n23c")
 
 [node name="HealthComponent" type="Node2D" parent="." unique_id=1774544584]
 script = ExtResource("11_4vynp")
+
+[node name="StaminaComponent" type="Node2D" parent="." unique_id=1797287633]
+script = ExtResource("12_yqkox")
 
 [node name="InventoryComponent" type="Node2D" parent="." unique_id=1096440737]
 script = ExtResource("11_8c7vv")
